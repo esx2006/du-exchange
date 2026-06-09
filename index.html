@@ -12,22 +12,26 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <style>
+
 body{
-font-family:'Cairo',sans-serif;
 margin:0;
-background:#f5f8fc;
+font-family:'Cairo',sans-serif;
+background:#f4f7ff;
+color:#111;
 }
 
 header{
-background:#0d6efd;
+background:linear-gradient(135deg,#0d6efd,#0a58ca);
 color:white;
-padding:20px;
+padding:25px 15px;
 text-align:center;
+position:relative;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
 }
 
 .logo{
-width:100px;
-height:100px;
+width:85px;
+height:85px;
 background:white;
 border-radius:50%;
 margin:auto;
@@ -36,7 +40,24 @@ align-items:center;
 justify-content:center;
 color:#0d6efd;
 font-weight:bold;
+font-size:14px;
 }
+
+#adminBtn{
+position:absolute;
+left:10px;
+top:10px;
+background:white;
+color:#0d6efd;
+border:none;
+padding:7px 10px;
+border-radius:8px;
+cursor:pointer;
+font-size:12px;
+transition:0.3s;
+}
+
+#adminBtn:hover{transform:scale(1.05)}
 
 .container{
 width:95%;
@@ -51,45 +72,95 @@ border-collapse:collapse;
 background:white;
 border-radius:12px;
 overflow:hidden;
+box-shadow:0 5px 20px rgba(0,0,0,.08);
 }
 
 th{
 background:#0d6efd;
 color:white;
-padding:12px;
+padding:14px;
+font-size:15px;
 }
 
 td{
 text-align:center;
 padding:12px;
 border-bottom:1px solid #eee;
+font-size:14px;
 }
 
-tr:hover{background:#f0f6ff}
+tr:hover{
+background:#f0f6ff;
+transition:0.2s;
+}
 
-.up{color:green;font-weight:bold}
-.down{color:red;font-weight:bold}
+.up{color:#198754;font-weight:bold}
+.down{color:#dc3545;font-weight:bold}
 
-.admin{
+footer{
+text-align:center;
+padding:20px;
 margin-top:20px;
 background:white;
-padding:15px;
-border-radius:10px;
+font-size:14px;
+}
+
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.modal-content{
+background:white;
+padding:20px;
+border-radius:12px;
+width:92%;
+max-width:520px;
+max-height:80vh;
+overflow:auto;
+animation:pop 0.2s ease-in-out;
+}
+
+@keyframes pop{
+from{transform:scale(0.9);opacity:0}
+to{transform:scale(1);opacity:1}
 }
 
 input{
-padding:8px;
-margin:5px;
-width:90%;
+width:100%;
+padding:10px;
+margin:6px 0;
+border:1px solid #ddd;
+border-radius:8px;
+outline:none;
 }
 
 button{
-padding:10px;
 background:#0d6efd;
 color:white;
 border:none;
-border-radius:6px;
+padding:10px;
+border-radius:8px;
 cursor:pointer;
+width:100%;
+margin-top:8px;
+font-weight:bold;
+}
+
+button:hover{opacity:0.9}
+
+.small{
+font-size:12px;
+color:#666;
+margin-top:5px;
 }
 
 </style>
@@ -98,9 +169,13 @@ cursor:pointer;
 <body>
 
 <header>
-<div class="logo">LOGO</div>
-<h1>شركة دو للصرافة</h1>
-<p>أسعار العملات مباشرة</p>
+
+<button id="adminBtn" onclick="openLogin()">⚙ Admin</button>
+
+<div class="logo">DO</div>
+<h2>شركة دو للصرافة</h2>
+<p>أسعار العملات مباشرة لحظة بلحظة</p>
+
 </header>
 
 <div class="container">
@@ -116,19 +191,34 @@ cursor:pointer;
 <tbody id="table"></tbody>
 </table>
 
-<div class="admin">
-<h3>لوحة الإدارة (للتجربة)</h3>
-<p>عدّل سعر الدولار فقط كتجربة الآن</p>
-
-<input id="buy" placeholder="سعر الشراء">
-<input id="sell" placeholder="سعر البيع">
-<button onclick="updateUSD()">تحديث الدولار</button>
 </div>
 
+<footer>
+📞 0999999999 | 📱 0987654321<br>
+فيسبوك | إنستغرام
+</footer>
+
+<!-- LOGIN -->
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<h3>تسجيل الدخول</h3>
+<input type="password" id="pass" placeholder="كلمة المرور">
+<button onclick="checkPass()">دخول</button>
+<p class="small">لوحة الإدارة خاصة بالمسؤول فقط</p>
+</div>
+</div>
+
+<!-- ADMIN -->
+<div class="modal" id="adminModal">
+<div class="modal-content">
+<h3>لوحة الإدارة</h3>
+<div id="adminArea"></div>
+</div>
 </div>
 
 <script>
-// 🔥 Firebase Config (منك)
+
+// 🔥 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyARLbs7TqhKmyaHFM-fBahuyonvbZA6m94",
   authDomain: "du-exchange-e34f0.firebaseapp.com",
@@ -138,11 +228,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// كلمة السر
+const PASSWORD = "1234";
+
 // تحميل العملات
-async function loadCurrencies(){
+async function load(){
 const snap = await db.collection("currencies").get();
 const table = document.getElementById("table");
-table.innerHTML = "";
+table.innerHTML="";
 
 snap.forEach(doc=>{
 const c = doc.data();
@@ -152,26 +245,56 @@ table.innerHTML += `
 <td>${c.name}</td>
 <td class="up">${c.buy}</td>
 <td class="down">${c.sell}</td>
-</tr>
+</tr>`;
+});
+}
+
+// فتح تسجيل الدخول
+function openLogin(){
+document.getElementById("loginModal").style.display="flex";
+}
+
+// تحقق كلمة السر
+function checkPass(){
+let p = document.getElementById("pass").value;
+if(p === PASSWORD){
+document.getElementById("loginModal").style.display="none";
+openAdmin();
+}else{
+alert("كلمة المرور غير صحيحة");
+}
+}
+
+// لوحة الإدارة
+async function openAdmin(){
+document.getElementById("adminModal").style.display="flex";
+const snap = await db.collection("currencies").get();
+const area = document.getElementById("adminArea");
+area.innerHTML="";
+
+snap.forEach(doc=>{
+const c = doc.data();
+
+area.innerHTML += `
+<div style="margin-bottom:15px">
+<b>${c.name}</b>
+<input value="${c.buy}" onchange="update('${doc.id}','buy',this.value)">
+<input value="${c.sell}" onchange="update('${doc.id}','sell',this.value)">
+</div>
 `;
 });
 }
 
-// تحديث الدولار
-async function updateUSD(){
-const buy = parseFloat(document.getElementById("buy").value);
-const sell = parseFloat(document.getElementById("sell").value);
-
-await db.collection("currencies").doc("USD").update({
-buy: buy,
-sell: sell
+// تحديث سعر
+function update(id,field,value){
+db.collection("currencies").doc(id).update({
+[field]: Number(value)
 });
-
-alert("تم التحديث");
-loadCurrencies();
 }
 
-loadCurrencies();
+// تشغيل
+load();
+
 </script>
 
 </body>
