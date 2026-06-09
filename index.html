@@ -210,6 +210,10 @@ margin-top:5px;
 <div class="modal-content">
 <h3>لوحة الإدارة</h3>
 <div id="adminArea"></div>
+
+<button onclick="saveAll()" style="margin-top:15px">
+💾 حفظ التعديلات
+</button>
 </div>
 </div>
 
@@ -224,6 +228,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+  let tempData = {};
 
 // كلمة السر
 const PASSWORD = "1234";
@@ -265,18 +270,33 @@ alert("كلمة المرور غير صحيحة");
 // لوحة الإدارة
 async function openAdmin(){
 document.getElementById("adminModal").style.display="flex";
+
 const snap = await db.collection("currencies").get();
 const area = document.getElementById("adminArea");
+
 area.innerHTML="";
+tempData = {};
 
 snap.forEach(doc=>{
 const c = doc.data();
 
+// نخزن نسخة مؤقتة
+tempData[doc.id] = {
+name: c.name,
+buy: c.buy,
+sell: c.sell
+};
+
+// عرض في الادمن
 area.innerHTML += `
 <div style="margin-bottom:15px">
 <b>${c.name}</b>
-<input value="${c.buy}" onchange="update('${doc.id}','buy',this.value)">
-<input value="${c.sell}" onchange="update('${doc.id}','sell',this.value)">
+
+<input value="${c.buy}" 
+onchange="tempData['${doc.id}'].buy = Number(this.value)">
+
+<input value="${c.sell}" 
+onchange="tempData['${doc.id}'].sell = Number(this.value)">
 </div>
 `;
 });
@@ -291,7 +311,18 @@ db.collection("currencies").doc(id).update({
 
 // تشغيل
 load();
+async function saveAll(){
 
+for(let id in tempData){
+await db.collection("currencies").doc(id).update({
+buy: tempData[id].buy,
+sell: tempData[id].sell
+});
+}
+
+alert("تم حفظ التعديلات بنجاح ✅");
+load();
+}
 </script>
 
 </body>
