@@ -2,12 +2,177 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>شركة دو للصرافة</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<style>
+body{
+font-family:'Cairo',sans-serif;
+margin:0;
+background:#f5f8fc;
+}
+
+header{
+background:#0d6efd;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.logo{
+width:100px;
+height:100px;
+background:white;
+border-radius:50%;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:center;
+color:#0d6efd;
+font-weight:bold;
+}
+
+.container{
+width:95%;
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:12px;
+overflow:hidden;
+}
+
+th{
+background:#0d6efd;
+color:white;
+padding:12px;
+}
+
+td{
+text-align:center;
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+tr:hover{background:#f0f6ff}
+
+.up{color:green;font-weight:bold}
+.down{color:red;font-weight:bold}
+
+.admin{
+margin-top:20px;
+background:white;
+padding:15px;
+border-radius:10px;
+}
+
+input{
+padding:8px;
+margin:5px;
+width:90%;
+}
+
+button{
+padding:10px;
+background:#0d6efd;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+</style>
 </head>
+
 <body>
 
+<header>
+<div class="logo">LOGO</div>
 <h1>شركة دو للصرافة</h1>
-<p>إذا كنت ترى هذه الرسالة فالموقع يعمل بنجاح.</p>
+<p>أسعار العملات مباشرة</p>
+</header>
+
+<div class="container">
+
+<table>
+<thead>
+<tr>
+<th>العملة</th>
+<th>شراء</th>
+<th>بيع</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+
+<div class="admin">
+<h3>لوحة الإدارة (للتجربة)</h3>
+<p>عدّل سعر الدولار فقط كتجربة الآن</p>
+
+<input id="buy" placeholder="سعر الشراء">
+<input id="sell" placeholder="سعر البيع">
+<button onclick="updateUSD()">تحديث الدولار</button>
+</div>
+
+</div>
+
+<script>
+// 🔥 Firebase Config (منك)
+const firebaseConfig = {
+  apiKey: "AIzaSyARLbs7TqhKmyaHFM-fBahuyonvbZA6m94",
+  authDomain: "du-exchange-e34f0.firebaseapp.com",
+  projectId: "du-exchange-e34f0",
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// تحميل العملات
+async function loadCurrencies(){
+const snap = await db.collection("currencies").get();
+const table = document.getElementById("table");
+table.innerHTML = "";
+
+snap.forEach(doc=>{
+const c = doc.data();
+
+table.innerHTML += `
+<tr>
+<td>${c.name}</td>
+<td class="up">${c.buy}</td>
+<td class="down">${c.sell}</td>
+</tr>
+`;
+});
+}
+
+// تحديث الدولار
+async function updateUSD(){
+const buy = parseFloat(document.getElementById("buy").value);
+const sell = parseFloat(document.getElementById("sell").value);
+
+await db.collection("currencies").doc("USD").update({
+buy: buy,
+sell: sell
+});
+
+alert("تم التحديث");
+loadCurrencies();
+}
+
+loadCurrencies();
+</script>
 
 </body>
 </html>
