@@ -1089,16 +1089,16 @@ tempData[id].sell
 
 }
 
-await db.collection(
+/*await db.collection(
 "settings"
 )
 .doc("general")
 .set({
 
 lastUpdate:
-new Date()
+firebase.firestore.FieldValue.serverTimestamp()
 
-});
+});*/
 
 showToast(
 "تم حفظ التعديلات بنجاح"
