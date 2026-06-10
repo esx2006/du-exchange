@@ -1,328 +1,1245 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>شركة دو للصرافة</title>
+<title>شركة دو للصرافة | DU Exchange</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <style>
 
-body{
+:root{
+--primary:#0d6efd;
+--primary2:#2f80ed;
+--success:#16a34a;
+--danger:#dc2626;
+--bg:#f5f8ff;
+--card:#ffffff;
+--text:#111827;
+--shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.dark{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#f8fafc;
+--shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:'Cairo',sans-serif;
-background:#f4f7ff;
-color:#111;
 }
 
-header{
-background:linear-gradient(135deg,#0d6efd,#0a58ca);
-color:white;
-padding:25px 15px;
-text-align:center;
+body{
+background:var(--bg);
+color:var(--text);
+transition:.3s;
+}
+
+.hero{
+
 position:relative;
-box-shadow:0 5px 15px rgba(0,0,0,.15);
-<button id="adminBtn" onclick="openLogin()">⚙️</button>
-}
+overflow:hidden;
 
-.logo{
-width:85px;
-height:85px;
-background:white;
-border-radius:50%;
-margin:auto;
+background:
+linear-gradient(
+135deg,
+rgba(13,110,253,.95),
+rgba(47,128,237,.95)
+);
+
+min-height:340px;
+
 display:flex;
 align-items:center;
 justify-content:center;
-color:#0d6efd;
-font-weight:bold;
-font-size:14px;
+text-align:center;
+
+padding:40px 20px;
 }
 
-#adminBtn{
+.hero::before{
+
+content:"";
+
 position:absolute;
-right:12px;
-top:12px;
-background:rgba(255,255,255,0.9);
-color:#0d6efd;
-border:none;
-width:38px;
-height:38px;
-border-radius:10px;
-cursor:pointer;
-font-size:16px;
-box-shadow:0 3px 10px rgba(0,0,0,0.15);
-transition:0.2s;
+
+width:900px;
+height:900px;
+
+background:
+radial-gradient(
+circle,
+rgba(255,255,255,.12),
+transparent 70%
+);
+
+top:-350px;
+right:-300px;
 }
 
-#adminBtn:hover{
-transform:scale(1.05);
+.hero::after{
+
+content:"";
+
+position:absolute;
+
+width:700px;
+height:700px;
+
+background:
+radial-gradient(
+circle,
+rgba(255,255,255,.08),
+transparent 70%
+);
+
+bottom:-250px;
+left:-250px;
 }
-table{
-width:100%;
-border-collapse:collapse;
+
+.hero-content{
+position:relative;
+z-index:2;
+}
+
+.logo-img{
+
+width:140px;
+height:140px;
+
 background:white;
-border-radius:12px;
-overflow:hidden;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-}
 
-th{
-background:#0d6efd;
-color:white;
-padding:14px;
-font-size:15px;
-}
+border-radius:50%;
 
-td{
-text-align:center;
 padding:12px;
-border-bottom:1px solid #eee;
-font-size:14px;
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.2);
 }
 
-tr:hover{
-background:#f0f6ff;
-transition:0.2s;
-}
-
-.up{color:#198754;font-weight:bold}
-.down{color:#dc3545;font-weight:bold}
-
-footer{
-text-align:center;
-padding:20px;
-margin-top:20px;
-background:white;
-font-size:14px;
-}
-
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-right:0;
-bottom:0;
-background:rgba(0,0,0,0.6);
-justify-content:center;
-align-items:center;
-z-index:999;
-}
-
-.modal-content{
-background:white;
-padding:20px;
-border-radius:12px;
-width:92%;
-max-width:520px;
-max-height:80vh;
-overflow:auto;
-animation:pop 0.2s ease-in-out;
-}
-
-@keyframes pop{
-from{transform:scale(0.9);opacity:0}
-to{transform:scale(1);opacity:1}
-}
-
-input{
-width:100%;
-padding:10px;
-margin:6px 0;
-border:1px solid #ddd;
-border-radius:8px;
-outline:none;
-}
-
-button{
-background:#0d6efd;
+.hero h1{
 color:white;
-border:none;
-padding:10px;
-border-radius:8px;
-cursor:pointer;
-width:100%;
-margin-top:8px;
-font-weight:bold;
+font-size:38px;
+margin-top:18px;
+font-weight:800;
 }
 
-button:hover{opacity:0.9}
+.hero p{
+color:#e8f0ff;
+font-size:17px;
+margin-top:10px;
+}
 
-.small{
-font-size:12px;
-color:#666;
+.top-actions{
+
+position:absolute;
+
+top:20px;
+left:20px;
+
+display:flex;
+gap:10px;
+
+z-index:10;
+}
+
+.circle-btn{
+
+width:48px;
+height:48px;
+
+border:none;
+border-radius:50%;
+
+background:white;
+
+cursor:pointer;
+
+font-size:20px;
+
+box-shadow:var(--shadow);
+
+transition:.2s;
+}
+
+.circle-btn:hover{
+transform:translateY(-3px);
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:25px;
+}
+
+.info-bar{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+
+gap:15px;
+
+margin-top:-50px;
+position:relative;
+z-index:5;
+}
+
+.info-card{
+
+background:var(--card);
+
+padding:20px;
+
+border-radius:18px;
+
+box-shadow:var(--shadow);
+
+text-align:center;
+}
+
+.info-title{
+font-size:13px;
+opacity:.7;
+}
+
+.info-value{
+font-size:20px;
+font-weight:700;
 margin-top:5px;
 }
 
+.rates-card{
+
+margin-top:25px;
+
+background:var(--card);
+
+border-radius:20px;
+
+overflow:hidden;
+
+box-shadow:var(--shadow);
+}
+
+.card-header{
+
+padding:20px;
+
+background:
+linear-gradient(
+135deg,
+var(--primary),
+var(--primary2)
+);
+
+color:white;
+
+font-size:20px;
+font-weight:700;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+
+background:#edf4ff;
+
+padding:16px;
+
+font-size:15px;
+}
+
+.dark th{
+background:#334155;
+}
+
+td{
+
+padding:16px;
+
+text-align:center;
+
+border-bottom:
+1px solid rgba(0,0,0,.06);
+}
+
+.buy{
+color:var(--success);
+font-weight:700;
+}
+
+.sell{
+color:var(--danger);
+font-weight:700;
+}
+
+tr:hover{
+background:rgba(13,110,253,.04);
+}
+
+footer{
+
+margin-top:40px;
+
+padding:30px;
+
+text-align:center;
+
+background:var(--card);
+
+box-shadow:var(--shadow);
+}
+
+.floating-admin{
+
+position:fixed;
+
+bottom:25px;
+right:25px;
+
+width:65px;
+height:65px;
+
+border:none;
+border-radius:50%;
+
+background:
+linear-gradient(
+135deg,
+#0d6efd,
+#2f80ed
+);
+
+color:white;
+
+font-size:24px;
+
+cursor:pointer;
+
+box-shadow:
+0 15px 35px rgba(13,110,253,.4);
+
+z-index:999;
+}
+
+.modal{
+
+display:none;
+
+position:fixed;
+
+inset:0;
+
+background:
+rgba(0,0,0,.6);
+
+justify-content:center;
+align-items:center;
+
+z-index:9999;
+}
+
+.modal-content{
+
+background:var(--card);
+
+width:95%;
+max-width:700px;
+
+padding:25px;
+
+border-radius:20px;
+
+max-height:85vh;
+
+overflow:auto;
+}
+
+.modal-title{
+
+font-size:24px;
+font-weight:700;
+margin-bottom:20px;
+}
+
+input{
+
+width:100%;
+
+padding:12px;
+
+border-radius:10px;
+
+border:1px solid #d1d5db;
+
+margin-top:8px;
+margin-bottom:8px;
+}
+
+.action-btn{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+border-radius:12px;
+
+background:#0d6efd;
+
+color:white;
+
+font-weight:700;
+
+cursor:pointer;
+}
+
+.secondary-btn{
+
+background:#64748b;
+}
+
+.delete-btn{
+
+background:#dc2626;
+}
+
+.currency-box{
+
+padding:15px;
+
+border-radius:12px;
+
+background:
+rgba(13,110,253,.05);
+
+margin-bottom:15px;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:28px;
+}
+
+.logo-img{
+width:110px;
+height:110px;
+}
+
+.container{
+padding:15px;
+}
+
+}
+.admin-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.currency-name{
+font-weight:700;
+font-size:18px;
+margin-bottom:10px;
+}
+
+.delete-btn{
+background:#dc2626;
+color:white;
+margin-top:10px;
+}
+
+.delete-btn:hover{
+background:#b91c1c;
+}
+
+.success-toast{
+
+position:fixed;
+
+top:20px;
+left:50%;
+
+transform:translateX(-50%);
+
+background:#16a34a;
+
+color:white;
+
+padding:15px 25px;
+
+border-radius:12px;
+
+z-index:10000;
+
+display:none;
+
+font-weight:700;
+}
 </style>
 </head>
 
 <body>
 
-<header>
+<div id="toast" class="success-toast">
+تم الحفظ بنجاح
+</div>
 
-<button id="adminBtn" onclick="openLogin()">⚙ Admin</button>
+<section class="hero">
 
-<div class="logo">DO</div>
-<h2>شركة دو للصرافة</h2>
-<p>أسعار العملات مباشرة لحظة بلحظة</p>
+<div class="top-actions">
 
-</header>
+<button
+class="circle-btn"
+onclick="toggleDarkMode()">
+🌙
+</button>
+
+</div>
+
+<div class="hero-content">
+
+<img
+src="IMG_6369.JPG.png"
+class="logo-img"
+alt="DU Exchange">
+
+<h1>شركة دو للصرافة</h1>
+
+<p>
+أسعار العملات والحوالات المالية
+المحدثة بشكل مباشر
+</p>
+
+</div>
+
+</section>
 
 <div class="container">
 
+<div class="info-bar">
+
+<div class="info-card">
+
+<div class="info-title">
+آخر تحديث
+</div>
+
+<div
+class="info-value"
+id="lastUpdate">
+--
+</div>
+
+</div>
+
+<div class="info-card">
+
+<div class="info-title">
+عدد العملات
+</div>
+
+<div
+class="info-value"
+id="currencyCount">
+0
+</div>
+
+</div>
+
+</div>
+
+<div class="rates-card">
+
+<div class="card-header">
+أسعار العملات اليوم
+</div>
+
 <table>
+
 <thead>
+
 <tr>
+
 <th>العملة</th>
 <th>شراء</th>
 <th>بيع</th>
+
 </tr>
+
 </thead>
-<tbody id="table"></tbody>
+
+<tbody id="table">
+
+</tbody>
+
 </table>
 
 </div>
 
+</div>
+
 <footer>
-📞 0999999999 | 📱 0987654321<br>
-فيسبوك | إنستغرام
+
+📞 0999999999
+
+<br><br>
+
+📱 0987654321
+
+<br><br>
+
+DU EXCHANGE © 2026
+
 </footer>
 
-<!-- LOGIN -->
+<button
+class="floating-admin"
+onclick="openLogin()">
+⚙
+</button>
+
+<!-- LOGIN MODAL -->
+
 <div class="modal" id="loginModal">
+
 <div class="modal-content">
-<h3>تسجيل الدخول</h3>
-<input type="password" id="pass" placeholder="كلمة المرور">
-<button onclick="checkPass()">دخول</button>
-<p class="small">لوحة الإدارة خاصة بالمسؤول فقط</p>
-</div>
+
+<div class="modal-title">
+تسجيل دخول الإدارة
 </div>
 
-<!-- ADMIN -->
+<input
+type="password"
+id="pass"
+placeholder="أدخل كلمة المرور">
+
+<button
+class="action-btn"
+onclick="checkPass()">
+دخول
+</button>
+
+<button
+class="action-btn secondary-btn"
+onclick="closeLogin()">
+إلغاء
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN MODAL -->
+
 <div class="modal" id="adminModal">
-<div class="modal-content">
-<h3>لوحة الإدارة</h3>
-<div id="adminArea"></div>
 
-<button onclick="saveAll()" style="margin-top:15px">
+<div class="modal-content">
+
+<div class="modal-title">
+لوحة التحكم
+</div>
+
+<!-- إضافة عملة -->
+
+<div
+style="
+background:rgba(13,110,253,.06);
+padding:20px;
+border-radius:15px;
+margin-bottom:20px;
+">
+
+<h3 style="margin-bottom:15px">
+إضافة عملة جديدة
+</h3>
+
+<input
+id="newName"
+placeholder="اسم العملة">
+
+<input
+id="newBuy"
+type="number"
+placeholder="سعر الشراء">
+
+<input
+id="newSell"
+type="number"
+placeholder="سعر البيع">
+
+<button
+class="action-btn"
+onclick="addCurrency()">
+➕ إضافة عملة
+</button>
+
+</div>
+
+
+<!-- العملات الحالية -->
+
+<h3 style="margin-bottom:15px">
+العملات الحالية
+</h3>
+
+<div id="adminArea">
+
+</div>
+
+
+<div
+style="
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:20px;
+">
+
+<button
+class="action-btn"
+onclick="saveAll()">
 💾 حفظ التعديلات
 </button>
+
+<button
+class="action-btn secondary-btn"
+onclick="closeAdmin()">
+✖ إغلاق
+</button>
+
 </div>
+
+</div>
+
 </div>
 
 <script>
 
-// 🔥 Firebase Config
+// ==========================
+// Firebase
+// ==========================
+
 const firebaseConfig = {
   apiKey: "AIzaSyARLbs7TqhKmyaHFM-fBahuyonvbZA6m94",
   authDomain: "du-exchange-e34f0.firebaseapp.com",
-  projectId: "du-exchange-e34f0",
+  projectId: "du-exchange-e34f0"
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-  let tempData = {};
 
-// كلمة السر
+const db = firebase.firestore();
+
+
+// ==========================
+// إعدادات
+// ==========================
+
 const PASSWORD = "1234";
 
-// تحميل العملات
-async function load(){
-const snap = await db.collection("currencies").get();
-const table = document.getElementById("table");
-table.innerHTML="";
+let tempData = {};
 
-snap.forEach(doc=>{
-const c = doc.data();
+let lastUpdateTime = null;
 
-table.innerHTML += `
-<tr>
-<td>${c.name}</td>
-<td class="up">${c.buy}</td>
-<td class="down">${c.sell}</td>
-</tr>`;
-});
+
+// ==========================
+// Toast
+// ==========================
+
+function showToast(message){
+
+const toast =
+document.getElementById("toast");
+
+toast.innerText = message;
+
+toast.style.display = "block";
+
+setTimeout(()=>{
+
+toast.style.display = "none";
+
+},2500);
+
 }
 
-// فتح تسجيل الدخول
-function openLogin(){
-document.getElementById("loginModal").style.display="flex";
-}
 
-// تحقق كلمة السر
-function checkPass(){
-let p = document.getElementById("pass").value;
-if(p === PASSWORD){
-document.getElementById("loginModal").style.display="none";
-openAdmin();
+// ==========================
+// Dark Mode
+// ==========================
+
+function toggleDarkMode(){
+
+document.body.classList.toggle("dark");
+
+if(
+document.body.classList.contains("dark")
+){
+
+localStorage.setItem(
+"theme",
+"dark"
+);
+
 }else{
+
+localStorage.setItem(
+"theme",
+"light"
+);
+
+}
+
+const btn =
+document.querySelector(".circle-btn");
+
+btn.innerHTML =
+document.body.classList.contains("dark")
+? "☀️"
+: "🌙";
+
+}
+
+if(
+localStorage.getItem("theme")
+=== "dark"
+){
+
+document.body.classList.add("dark");
+
+}
+window.addEventListener("load",()=>{
+
+const btn =
+document.querySelector(".circle-btn");
+
+btn.innerHTML =
+document.body.classList.contains("dark")
+? "☀️"
+: "🌙";
+
+});
+
+// ==========================
+// Login
+// ==========================
+
+function openLogin(){
+
+document.getElementById(
+"loginModal"
+).style.display = "flex";
+
+}
+
+function closeLogin(){
+
+document.getElementById(
+"loginModal"
+).style.display = "none";
+
+}
+
+function checkPass(){
+
+const p =
+document.getElementById("pass")
+.value;
+
+if(p === PASSWORD){
+
+closeLogin();
+
+openAdmin();
+
+}else{
+
 alert("كلمة المرور غير صحيحة");
-}
+
 }
 
-// لوحة الإدارة
+}
+
+
+// ==========================
+// Admin
+// ==========================
+
+function closeAdmin(){
+
+document.getElementById(
+"adminModal"
+).style.display = "none";
+
+}
+
 async function openAdmin(){
-document.getElementById("adminModal").style.display="flex";
 
-const snap = await db.collection("currencies").get();
-const area = document.getElementById("adminArea");
+document.getElementById(
+"adminModal"
+).style.display = "flex";
 
-area.innerHTML="";
+const area =
+document.getElementById(
+"adminArea"
+);
+
+area.innerHTML = "";
+
 tempData = {};
 
+const snap =
+await db.collection(
+"currencies"
+).get();
+
 snap.forEach(doc=>{
+
 const c = doc.data();
 
-// نخزن نسخة مؤقتة
 tempData[doc.id] = {
-name: c.name,
-buy: c.buy,
-sell: c.sell
+
+name:c.name,
+buy:c.buy,
+sell:c.sell
+
 };
 
-// عرض في الادمن
 area.innerHTML += `
-<div style="margin-bottom:15px">
-<b>${c.name}</b>
 
-<input value="${c.buy}" 
-onchange="tempData['${doc.id}'].buy = Number(this.value)">
+<div class="currency-box">
 
-<input value="${c.sell}" 
-onchange="tempData['${doc.id}'].sell = Number(this.value)">
+<div class="currency-name">
+${c.name}
 </div>
+
+<div class="admin-grid">
+
+<input
+value="${c.buy}"
+oninput="
+tempData['${doc.id}'].buy=
+Number(this.value)
+">
+
+<input
+value="${c.sell}"
+oninput="
+tempData['${doc.id}'].sell=
+Number(this.value)
+">
+
+</div>
+
+<button
+class="action-btn delete-btn"
+onclick="deleteCurrency('${doc.id}')">
+
+🗑 حذف العملة
+
+</button>
+
+</div>
+
 `;
+
 });
+
 }
 
-// تحديث سعر
-function update(id,field,value){
-db.collection("currencies").doc(id).update({
-[field]: Number(value)
-});
+
+// ==========================
+// إضافة عملة
+// ==========================
+
+async function addCurrency(){
+
+const name =
+document.getElementById(
+"newName"
+).value.trim();
+
+const buy =
+Number(
+document.getElementById(
+"newBuy"
+).value
+);
+
+const sell =
+Number(
+document.getElementById(
+"newSell"
+).value
+);
+
+if(
+name === "" ||
+isNaN(buy) ||
+isNaN(sell)
+){
+
+alert(
+"أدخل جميع البيانات"
+);
+
+return;
+
 }
 
-// تشغيل
-load();
+await db.collection(
+"currencies"
+).add({
+
+name:name,
+buy:buy,
+sell:sell
+
+});
+
+document.getElementById(
+"newName"
+).value = "";
+
+document.getElementById(
+"newBuy"
+).value = "";
+
+document.getElementById(
+"newSell"
+).value = "";
+
+showToast(
+"تمت إضافة العملة"
+);
+
+openAdmin();
+
+}
+
+
+// ==========================
+// حذف عملة
+// ==========================
+
+async function deleteCurrency(id){
+
+const confirmDelete =
+confirm(
+"هل تريد حذف هذه العملة ؟"
+);
+
+if(!confirmDelete)
+return;
+
+await db.collection(
+"currencies"
+)
+.doc(id)
+.delete();
+
+showToast(
+"تم حذف العملة"
+);
+
+openAdmin();
+
+}
+
+
+// ==========================
+// حفظ التعديلات
+// ==========================
+
 async function saveAll(){
 
 for(let id in tempData){
-await db.collection("currencies").doc(id).update({
-buy: tempData[id].buy,
-sell: tempData[id].sell
+
+await db.collection(
+"currencies"
+)
+.doc(id)
+.update({
+
+buy:
+tempData[id].buy,
+
+sell:
+tempData[id].sell
+
 });
+
 }
 
-alert("تم حفظ التعديلات بنجاح ✅");
-load();
+await db.collection(
+"settings"
+)
+.doc("general")
+.set({
+
+lastUpdate:
+firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+showToast(
+"تم حفظ التعديلات بنجاح"
+);
+
+closeAdmin();
+
 }
+
+
+// ==========================
+// تحديث مباشر
+// ==========================
+
+db.collection(
+"currencies"
+)
+.onSnapshot(snapshot=>{
+
+const table =
+document.getElementById(
+"table"
+);
+
+table.innerHTML = "";
+
+let count = 0;
+
+snapshot.forEach(doc=>{
+
+count++;
+
+const c = doc.data();
+
+table.innerHTML += `
+
+<tr>
+
+<td>
+${c.name}
+</td>
+
+<td class="buy">
+${c.buy}
+</td>
+
+<td class="sell">
+${c.sell}
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById(
+"currencyCount"
+).innerText = count;
+
+});
+
+
+// ==========================
+// آخر تحديث
+// ==========================
+
+db.collection(
+"settings"
+)
+.doc("general")
+.onSnapshot(doc=>{
+
+if(!doc.exists)
+return;
+
+const data =
+doc.data();
+
+if(!data.lastUpdate)
+return;
+
+let date;
+
+if(
+data.lastUpdate.toDate
+){
+
+date =
+data.lastUpdate.toDate();
+
+}else{
+
+date =
+new Date(
+data.lastUpdate
+);
+
+}
+
+document.getElementById(
+"lastUpdate"
+).innerText =
+
+date.toLocaleString(
+"ar-EG"
+);
+
+});
+
+
+// ==========================
+// إغلاق النوافذ
+// ==========================
+
+window.onclick = function(event){
+
+const login =
+document.getElementById(
+"loginModal"
+);
+
+const admin =
+document.getElementById(
+"adminModal"
+);
+
+if(event.target === login){
+
+closeLogin();
+
+}
+
+if(event.target === admin){
+
+closeAdmin();
+
+}
+
+};
+
 </script>
 
 </body>
