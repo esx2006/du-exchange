@@ -1096,7 +1096,7 @@ await db.collection(
 .set({
 
 lastUpdate:
-firebase.firestore.FieldValue.serverTimestamp()
+new Date()
 
 });
 
